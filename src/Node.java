@@ -1,45 +1,27 @@
-import java.awt.geom.Point2D;
-import java.io.IOException;
-import java.nio.file.Paths;
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
 
-class Node implements AStarNode {
+class Node{
     
-    private static final String VALID_SYMBOLS = ">!X012";
     private Map <Node, Relation> neighborMap;
     private double cost;
-    private char symbol;
     private boolean traversable;
-    private Point2D location;
+    private Point location;
     
-    enum Relation
-    {
-      ABOVE, BELOW, LEFT_OF, RIGHT_OF, NON_ADJASCENT
-    }
-    
-    /**
-     * Base constructor takes 
-     * 
-     * @param x
-     * @param y
-     * @param cost
-     * @param traversable
-     */
-    public Node( double x, double y, double cost, boolean traversable)
+    public Node(int x, int y, double cost, boolean traversable)
     {
       neighborMap = new HashMap<>();
-      location = new Point2D.Double(x, y);
+      location = new Point(x, y);
       this.traversable = traversable;
       this.cost = cost; 
     }
     
-    public Node(Point2D loc, double cost, boolean traversable)
+    public Node(Point loc, double cost, boolean traversable)
     {
-      this(loc.getX(), loc.getY(), cost, traversable);
+      this(loc.x, loc.y, cost, traversable);
     }
     
     public void addNeighbor( Node node, Relation relation)
@@ -50,54 +32,36 @@ class Node implements AStarNode {
     public Relation getRelationTo(Node node)
     {
       if(neighborMap.containsKey(node)) return neighborMap.get(node);
-      else return Relation.NON_ADJASCENT;          
+      else return Relation.NOT_ADJASCENT_TO;          
     }
     
-    @Override
-    public double heuristicDistance(AStarNode node)
+    public double heuristicDistance(Node target)
     {
-      return node.getLocation().distance(location);
+      Point targetLoc = target.getLocation(); 
+      int dx = Math.abs(location.x - targetLoc.x);
+      int dy = Math.abs(location.y - targetLoc.y);
+      return dx + dy;
     }
 
-    @Override
     public double getCost()
     {
       return cost;
     }
     
-    @Override
     public boolean isTraversable()
     {
       return traversable;
     }
 
-    @Override
-    public List<? extends AStarNode> getNeighbors()
+    public List<Node> getNeighbors()
     {
       return new ArrayList<>(neighborMap.keySet());
     }
 
-    @Override
-    public Point2D getLocation()
+    public Point getLocation()
     {
-      return new Point2D.Double(location.getX(), location.getY());
+      return new Point(location.x, location.y);
     }
     
-    public static List<Node> makeGraphFromFile(String fileName)
-    {
-      try(Scanner scanner = new Scanner(Paths.get(fileName)))
-      {
-        while(scanner.hasNext())
-        {
-          String str = scanner.next();
-          System.out.println(str);      
-        }
-      }
-      catch(IOException e)
-      {
-        e.printStackTrace();
-      }
-      
-      return null;
-    }
+    
   }

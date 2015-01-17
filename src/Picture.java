@@ -127,7 +127,7 @@ public class Picture extends JFrame implements ComponentListener
   
   //===============================================================
   //listenForResize(ComponentListener listenter)
-  //
+  //node
   // Call this method to make the window resizeable.
   // This method requires a ComponentListener. 
   // To use this, the class calling this method must:
